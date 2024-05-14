@@ -1,0 +1,38 @@
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+public class MainControllerTest {
+
+    private MainController mainController;
+    private PokemonRepository pokemonRepository;
+
+    @Before
+    public void setUp() {
+        pokemonRepository = mock(PokemonRepository.class);
+        mainController = new MainController();
+        mainController.setPokemonRepository(pokemonRepository);
+    }
+
+    @Test
+    public void testAggiungiPokemon() {
+        // Parametri del pokemon da aggiungere
+        String name = "Pikachu";
+        String tipo = "Elettro";
+        long hp = 100;
+
+        // Chiamata al metodo aggiungiPokemon del controller
+        ResponseEntity<String> response = mainController.aggiungiPokemon(name, tipo, hp);
+
+        // Verifica che la chiamata al repository sia avvenuta correttamente
+        verify(pokemonRepository, times(1)).save(any(Pokemon.class));
+
+        // Verifica che il controller restituisca la risposta attesa
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("aggiunto", response.getBody());
+    }
+}

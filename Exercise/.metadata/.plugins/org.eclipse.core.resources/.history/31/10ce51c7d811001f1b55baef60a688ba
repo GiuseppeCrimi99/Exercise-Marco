@@ -1,0 +1,114 @@
+package com.example.accessingdatamysql;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@CrossOrigin(origins = "http://localhost:3000")
+@Controller // This means that this class is a Controller
+@RequestMapping(path = "/api") // This means URL's start with /demo (after Application path)
+
+public class MainController {
+	/**
+	 * Questa classe funge da controller principale per gestire le richieste di rete
+	 * e inizializzare il sistema. È responsabile per coordinare le operazioni di
+	 * rete e l'inizializzazione dei componenti necessari per il corretto
+	 * funzionamento dell'applicazione.
+	 */
+	@Autowired
+	private PokemonRepository pokemonRepository;
+
+	/**
+	 * 
+	 * @param nuovoContatto Il nuovo contatto da aggiungere alla rubrica.
+	 * @return Un messaggio che conferma l'aggiunta del contatto.
+	 */
+
+	// aggiunge contatto alla rubrica
+//	@PostMapping(path = "/add")
+//	public @ResponseBody String aggiungiContatto(@RequestBody User nuovoContatto) {
+//		userRepository.save(nuovoContatto);
+//		return "Contatto aggiunto con successo!";
+//	}
+	@PostMapping(path="/add")
+	public @ResponseBody String aggiungiContatto(@RequestParam String name,@RequestParam String tipo,@RequestParam long hp) {
+		Pokemon u = new Pokemon();
+		u.setName(name);
+		u.setTipo(tipo);
+		u.setHp(hp);
+		this.pokemonRepository.save(u);
+		return "aggiunto";
+	}
+
+	// vedi tutti i contatti della rubrica
+	@GetMapping(path = "/view")
+	public @ResponseBody Iterable<Pokemon> visualizzaRubrica() {
+		return pokemonRepository.findAll();
+	}
+/**
+ * 
+ * @param id              L'ID del contatto da aggiornare.
+ * @param name            Il nuovo nome da assegnare al contatto.
+ * @param numeroTelefono  Il nuovo numero di telefono da assegnare al contatto.
+ * @return Un messaggio che conferma l'aggiornamento del contatto.
+ */
+	// aggionra un contatto
+	@PutMapping(path = "/aggiorna")
+	public @ResponseBody String aggiornaContatto(@RequestParam Integer id, @RequestParam String name,
+			@RequestParam String tipo) {
+		Optional<Pokemon> contattoOptional = pokemonRepository.findById(id);
+		if (contattoOptional.isPresent()) {
+			Pokemon contatto = contattoOptional.get();
+			contatto.setName(name);
+			contatto.setTipo(tipo);
+			pokemonRepository.save(contatto);
+			return "Contatto aggiornato con successo!";
+		} else {
+			return "Contatto non trovato!";
+		}
+	}
+	/**
+	 * 
+	 * @param id ID del contatto da eliminare
+	 * @return un mesaggio che conferma l'eliminazione del contatto
+	 */
+	// rimuove un contatto
+	@DeleteMapping("/delete")
+	public String eliminaContatto(@RequestParam Integer id) {
+		Optional<Pokemon> contattoOptional = pokemonRepository.findById(id);
+		if (contattoOptional.isPresent()) {
+			pokemonRepository.deleteById(id);
+			return "Contatto eliminato con successo!";
+		} else {
+			return "Contatto non trovato!";
+		}
+	}
+	// cerca un contatto per nome
+	@GetMapping("/cerca")
+	public @ResponseBody Iterable<Pokemon> cercaContattoPerNome(@RequestParam String name) {
+		return pokemonRepository.findByName(name);
+	}
+
+	// cerca un contatto per nome e numero di telefono
+	@GetMapping("/cercaPerNomeENumero")
+	public @ResponseBody Iterable<Pokemon> cercaContattoPerNomeENumero(@RequestParam String name,
+			@RequestParam String tipo) {
+		return pokemonRepository.findByNameAndTipo(name, tipo);
+	}
+	 @RequestMapping(method = RequestMethod.OPTIONS)
+	    public ResponseEntity<?> handleOptions() {
+	        return ResponseEntity.ok().build();
+	    }
+	}

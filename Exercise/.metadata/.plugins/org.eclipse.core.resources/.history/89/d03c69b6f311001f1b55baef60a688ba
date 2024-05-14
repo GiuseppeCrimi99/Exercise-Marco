@@ -1,0 +1,24 @@
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.http.HttpStatus;
+
+import com.example.accessingdatamysql.MainController;
+
+public class MainControllerTest {
+
+    private MainController mainController;
+
+    @Before
+    public void setUp() {
+        mainController = new MainController();
+    }
+
+    @Test
+    public void testAggiungiPokemon() {
+        String result = mainController.aggiungiPokemon("Pikachu", "Elettro", 100);
+        assertEquals("aggiunto", result);
+    }
+
+}

@@ -1,0 +1,15 @@
+package poke_tdd.Poke_tdd;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+
+@WebMvcTest(MainController.class)
+public class MainControllerTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@MockBean
+	private GreetingService service;
+	
+}

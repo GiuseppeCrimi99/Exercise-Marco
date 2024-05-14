@@ -1,0 +1,57 @@
+package com.example.accessingdatamysql;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Scanner;
+
+@SpringBootApplication
+public class Main {
+
+    public static void main(String[] args) {
+        // Avvia l'applicazione Spring e ottieni il contesto dell'applicazione
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+
+        // Recupera la lista dei Pokémon dall'API
+        RestTemplate restTemplate = new RestTemplate();
+        String apiUrl = "http://localhost:8080/api/view"; // Assicurati di utilizzare l'URL corretto per l'API
+        Pokemon[] pokemonArray = restTemplate.getForObject(apiUrl, Pokemon[].class);
+
+        // Stampa l'intera lista dei Pokémon
+        System.out.println("Lista dei Pokémon:");
+        for (Pokemon pokemon : pokemonArray) {
+            System.out.println(pokemon.getName());
+        }
+
+        // Chiedi all'utente di scegliere un Pokémon
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Inserisci il nome del Pokémon che desideri: ");
+        String pokemonName = scanner.nextLine();
+
+        // Cerca il Pokémon nel repository
+        Pokemon foundPokemon = null;
+        for (Pokemon pokemon : pokemonArray) {
+            if (pokemon.getName().equalsIgnoreCase(pokemonName)) {
+                foundPokemon = pokemon;
+                break;
+            }
+        }
+
+        // Se il Pokémon è stato trovato, stampa le sue informazioni
+        if (foundPokemon != null) {
+            System.out.println("Pokémon trovato:");
+            System.out.println("ID: " + foundPokemon.getId());
+            System.out.println("Nome: " + foundPokemon.getName());
+            System.out.println("Tipo: " + foundPokemon.getTipo());
+            System.out.println("HP: " + foundPokemon.getHp());
+        } else {
+            System.out.println("Pokémon non trovato.");
+        }
+
+        // Chiudi il contesto dell'applicazione Spring e lo scanner
+        context.close();
+        scanner.close();
+    }
+}

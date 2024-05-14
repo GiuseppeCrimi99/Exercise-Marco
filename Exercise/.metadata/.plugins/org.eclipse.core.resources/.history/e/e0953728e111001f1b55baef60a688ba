@@ -1,0 +1,38 @@
+package com.example.accessingdatamysql;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.Scanner;
+
+@SpringBootApplication
+public class Main {
+
+    public static void main(String[] args) {
+        // Avvia l'applicazione Spring e ottieni il contesto dell'applicazione
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+
+        // Ottieni l'istanza di PokemonGame dal contesto dell'applicazione
+        PokemonGame pokemonGame = context.getBean(PokemonGame.class);
+
+        // Chiediamo all'utente di premere invio per giocare
+        System.out.println("Premi invio per giocare al gioco Pokémon!");
+        waitForEnter();
+
+        // Avviamo il gioco
+        String result = pokemonGame.play();
+
+        // Stampiamo il risultato
+        System.out.println(result);
+
+        // Chiudi il contesto dell'applicazione Spring
+        context.close();
+    }
+
+    private static void waitForEnter() {
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine(); // Aspetta finché l'utente non preme invio
+        scanner.close();
+    }
+}

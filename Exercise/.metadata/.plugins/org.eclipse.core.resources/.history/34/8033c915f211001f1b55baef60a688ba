@@ -1,0 +1,11 @@
+package poke_tdd.Poke_tdd;
+
+
+public class MainControllerTest {
+
+    private MainController mainController;
+    private PokemonRepository pokemonRepository;
+	
+
+	
+}

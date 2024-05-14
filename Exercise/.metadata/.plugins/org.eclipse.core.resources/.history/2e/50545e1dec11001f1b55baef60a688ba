@@ -1,0 +1,79 @@
+package com.example.accessingdatamysql;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Scanner;
+
+@SpringBootApplication
+public class Main {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+
+        // Recupera la lista dei Pokémon dall'API
+        RestTemplate restTemplate = new RestTemplate();
+        String apiUrl = "http://localhost:8080/api/view"; // Assicurati di utilizzare l'URL corretto per l'API
+        Pokemon[] pokemonArray = restTemplate.getForObject(apiUrl, Pokemon[].class);
+
+        // Stampa la lista dei Pokémon
+        System.out.println("Lista dei Pokémon:");
+        for (Pokemon pokemon : pokemonArray) {
+            System.out.println(pokemon.getName());
+        }
+
+        // Inizializza una variabile per tenere traccia se l'utente desidera continuare o meno
+        boolean continua = true;
+        Scanner scanner = new Scanner(System.in);
+
+        while (continua) {
+            // Chiedi all'utente di scegliere un Pokémon o di aggiungerne uno nuovo
+            System.out.print("\nInserisci il nome del Pokémon che desideri (oppure 'fine' per uscire, 'aggiungi' per aggiungere un nuovo Pokémon): ");
+            String pokemonName = scanner.nextLine();
+
+            if (pokemonName.equalsIgnoreCase("fine")) {
+                continua = false; // Termina il programma se l'utente sceglie di uscire
+            } else if (pokemonName.equalsIgnoreCase("aggiungi")) {
+                // Richiedi i dettagli del nuovo Pokémon
+                System.out.print("Inserisci il nome del nuovo Pokémon: ");
+                String newName = scanner.nextLine();
+                System.out.print("Inserisci il tipo del nuovo Pokémon: ");
+                String newType = scanner.nextLine();
+                System.out.print("Inserisci l'HP del nuovo Pokémon: ");
+                long newHp = Long.parseLong(scanner.nextLine());
+
+                // Invia la richiesta POST all'API per aggiungere il nuovo Pokémon
+                String addUrl = "http://localhost:8080/api/add?name=" + newName + "&tipo=" + newType + "&hp=" + newHp;
+                restTemplate.postForObject(addUrl, null, String.class);
+
+                System.out.println("Il nuovo Pokémon è stato aggiunto con successo:");
+                System.out.println("Nome: " + newName);
+                System.out.println("Tipo: " + newType);
+                System.out.println("HP: " + newHp);
+            } else {
+                // Cerca il Pokémon nella lista
+                boolean pokemonFound = false;
+                for (Pokemon pokemon : pokemonArray) {
+                    if (pokemon.getName().equalsIgnoreCase(pokemonName)) {
+                        System.out.println("Pokémon trovato:");
+                        System.out.println("ID: " + pokemon.getId());
+                        System.out.println("Nome: " + pokemon.getName());
+                        System.out.println("Tipo: " + pokemon.getTipo());
+                        System.out.println("HP: " + pokemon.getHp());
+                        pokemonFound = true;
+                        break;
+                    }
+                }
+
+                // Se il Pokémon non è stato trovato, stampa un messaggio
+                if (!pokemonFound) {
+                    System.out.println("Pokémon non trovato.");
+                }
+            }
+        }
+
+        // Chiudi lo scanner
+        scanner.close();
+    }
+}

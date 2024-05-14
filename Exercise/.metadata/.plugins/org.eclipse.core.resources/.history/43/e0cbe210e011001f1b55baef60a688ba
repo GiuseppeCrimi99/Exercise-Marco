@@ -1,0 +1,36 @@
+package com.example.accessingdatamysql;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Random;
+
+@Component
+public class PokemonGame {
+
+    private final PokemonRepository pokemonRepository;
+
+    @Autowired
+    public PokemonGame(PokemonRepository pokemonRepository) {
+        this.pokemonRepository = pokemonRepository;
+    }
+
+    public String play() {
+        boolean pokemonCaptured = tryToCatchPokemon();
+
+        if (pokemonCaptured) {
+            return "Congratulazioni! Hai catturato un Pokémon!";
+        } else {
+            return "Oh no! Il Pokémon è scappato!";
+        }
+    }
+
+    private boolean tryToCatchPokemon() {
+        Random random = new Random();
+        int randomNumber = random.nextInt(1000); // Genera un numero casuale tra 0 e 999
+
+        // Se il numero generato è minore di 200, il Pokémon viene catturato
+        // Altrimenti, il Pokémon scappa
+        return randomNumber < 200;
+    }
+}

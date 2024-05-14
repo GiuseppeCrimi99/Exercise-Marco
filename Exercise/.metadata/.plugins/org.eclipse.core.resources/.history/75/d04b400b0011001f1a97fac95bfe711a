@@ -1,0 +1,85 @@
+package com.example.accessingdatamysql;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+@CrossOrigin(origins="http://localhost:3000")
+@Controller // This means that this class is a Controller
+@RequestMapping(path = "/api") // This means URL's start with /demo (after Application path)
+/**
+ * Questa classe funge da controller principale per gestire le richieste di rete e inizializzare
+ * il sistema. È responsabile per coordinare le operazioni di rete e l'inizializzazione dei componenti
+ * necessari per il corretto funzionamento dell'applicazione.
+ */
+public class MainController {
+	
+    @Autowired
+    private UserRepository userRepository;
+    /**
+     * 
+     * @param nuovoContatto  serve per creare come da nomenclatura il nuovo contatto 
+     * @return   che ritorna id,nome e numero di telefono
+     */
+    
+    
+    // aggiunge contatto alla rubrica
+    @PostMapping(path = "/add")
+    public @ResponseBody String aggiungiContatto(@RequestBody User nuovoContatto) {
+        userRepository.save(nuovoContatto);
+        return "Contatto aggiunto con successo!";
+    }
+    // vedi tutti i contatti della rubrica
+    @GetMapping(path = "/view")
+    public @ResponseBody Iterable<User> visualizzaRubrica() {
+        return userRepository.findAll();
+    }
+
+    // aggionra un contatto
+    @PutMapping(path = "/aggiorna")
+    public @ResponseBody String aggiornaContatto(@RequestParam Integer id, @RequestParam String name, @RequestParam long numeroTelefono) {
+        Optional<User> contattoOptional = userRepository.findById(id);
+        if (contattoOptional.isPresent()) {
+            User contatto = contattoOptional.get();
+            contatto.setName(name);
+            contatto.setNumeroTelefono(numeroTelefono);
+            userRepository.save(contatto);
+            return "Contatto aggiornato con successo!";
+        } else {
+            return "Contatto non trovato!";
+        }
+    }
+
+    // rimuove un contatto
+    @DeleteMapping("/delete")
+    public String eliminaContatto(@RequestParam Integer id) {
+        Optional<User> contattoOptional = userRepository.findById(id);
+        if (contattoOptional.isPresent()) {
+            userRepository.deleteById(id);
+            return "Contatto eliminato con successo!";
+        } else {
+            return "Contatto non trovato!";
+        }
+    }
+
+    // cerca un contatto per nome
+    @GetMapping("/cerca")
+    public @ResponseBody Iterable<User> cercaContattoPerNome(@RequestParam String name) {
+        return userRepository.findByName(name);
+    }
+
+    // cerca un contatto per nome e numero di telefono
+    @GetMapping("/cercaPerNomeENumero")
+    public @ResponseBody Iterable<User> cercaContattoPerNomeENumero(@RequestParam String name, @RequestParam long numeroTelefono) {
+        return userRepository.findByNameAndNumeroTelefono(name, numeroTelefono);
+    }
+}

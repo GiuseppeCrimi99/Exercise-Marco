@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+Test set: intro_tdd3.intro_tdd3.AppTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.035 s <<< FAILURE! - in intro_tdd3.intro_tdd3.AppTest
+printNumbers(intro_tdd3.intro_tdd3.AppTest)  Time elapsed: 0.005 s  <<< FAILURE!
+org.junit.ComparisonFailure: 
+expected:<1[]> but was:<1[
+]>
+	at intro_tdd3.intro_tdd3.AppTest.printNumbers(AppTest.java:11)
+
+printNumberX3(intro_tdd3.intro_tdd3.AppTest)  Time elapsed: 0 s  <<< FAILURE!
+org.junit.ComparisonFailure: 
+expected:<[kuksa]> but was:<[1
+2
+kuksa
+]>
+	at intro_tdd3.intro_tdd3.AppTest.printNumberX3(AppTest.java:16)
+
+printNumberX5(intro_tdd3.intro_tdd3.AppTest)  Time elapsed: 0 s  <<< FAILURE!
+org.junit.ComparisonFailure: 
+expected:<[sauna]> but was:<[1
+2
+kuksa
+4
+sauna
+]>
+	at intro_tdd3.intro_tdd3.AppTest.printNumberX5(AppTest.java:21)
+

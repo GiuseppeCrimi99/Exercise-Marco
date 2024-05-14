@@ -1,0 +1,39 @@
+package com.example.accessingdatamysql;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .cors() // Abilita la configurazione CORS
+            .and()
+            // Altre configurazioni di sicurezza...
+            .authorizeRequests()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+            .and()
+            .httpBasic();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        // Configura le origini consentite
+        config.addAllowedOrigin("*"); // Per consentire tutte le origini, sostituisci "*" con il tuo URL frontend specifico
+        config.addAllowedMethod("*"); // Permetti tutti i metodi HTTP
+        config.addAllowedHeader("*"); // Permetti tutte le intestazioni
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+}

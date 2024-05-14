@@ -1,0 +1,20 @@
+package poke_tdd.Poke_tdd;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import com.example.accessingdatamysql.MainController;
+
+public class MainControllerTest {
+
+    private MainController mainController;
+    @Test
+    public void testAggiungiPokemon() {
+        String result = mainController.aggiungiPokemon("Pikachu", "Elettro", 100);
+        assertEquals("aggiunto", result);
+    }
+
+}
